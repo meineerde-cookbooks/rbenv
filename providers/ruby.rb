@@ -85,7 +85,11 @@ def ruby_installed?
 end
 
 def ruby_build_missing?
-  ! run_context.loaded_recipe?("ruby_build")
+  if run_context.respond_to?(:loaded_recipe?)
+    ! run_context.loaded_recipe?("ruby_build")
+  else
+    !node.run_state[:seen_recipes].key?("ruby_build") && !node.run_state[:seen_recipes].key?("ruby_build::default")
+  end
 end
 
 def install_ruby_dependencies
